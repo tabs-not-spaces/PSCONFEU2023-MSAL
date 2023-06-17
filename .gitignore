@@ -1,3 +1,4 @@
 local.ps1
 *.cer
 *.pfx
+~*.pptx

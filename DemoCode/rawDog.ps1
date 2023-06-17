@@ -1,5 +1,5 @@
 #region auth config
-. ./MSAL/DemoCode/local.ps1
+. ./DemoCode/local.ps1
 #endregion
 
 #region DONT DO THIS ITS REALLY BAD
