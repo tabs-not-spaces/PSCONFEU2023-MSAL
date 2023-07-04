@@ -2,7 +2,11 @@
 $subjectName = "PSConfEU2023"
 $certStore = "LocalMachine"
 $validityPeriod = 24
+$certFolder = "$($pwd)\DemoCode"
+$clientID = "74864e47-6c5b-4f48-b266-6ed05924a042"
+$tenantID = "5eb3e1d4-9e18-4b93-8933-29e3e47c5290"
 
+#region not running this code in the demo today
 $newCert = @{
     Subject           = "CN=$($subjectName)"
     CertStoreLocation = "Cert:\$($certStore)\My"
@@ -31,13 +35,20 @@ $pfxExport = @{
     Password     = $certPassword
 }
 Export-PfxCertificate @pfxExport
+#endregion
 
 #connect to service principal with MSAL using certificate for authentication. 
-$clientID = "74864e47-6c5b-4f48-b266-6ed05924a042"
-$tenantID = "5eb3e1d4-9e18-4b93-8933-29e3e47c5290"
-$clientCert = Get-PfxCertificate -FilePath $certFolder\$($subjectName).cer
-$clientCertificate = Get-ChildItem "Cert:\$($certStore)\my\$($clientCert.Thumbprint)"
-$authToken = Get-MsalToken -clientID $clientID -tenantID $tenantID -clientCertificate $clientCertificate
+$pfxParams = @{
+    FilePath = "$($certFolder)\$($subjectName).pfx"
+    Password = 'P@ssw0rd' | ConvertTo-SecureString -AsPlainText -Force
+}
+$clientCert = Get-PfxCertificate @pfxParams
+$authTokenParams = @{
+    ClientId          = $clientID
+    TenantId          = $tenantID
+    ClientCertificate = $clientCert
+}
+$authToken = Get-MsalToken @authTokenParams
 
 #make a Graph call using the token to test it works
 $resourceURI = "deviceAppManagement/mobileApps?`$filter=(isof('microsoft.graph.win32LobApp'))"

@@ -17,7 +17,7 @@ $params = @{
     ClientId    = 'd1ddf0e4-d672-4dae-b554-9d5bdfd93547'
     TenantId    = $env:tenant
     Interactive = $true
-    # RedirectUri = 'urn:ietf:wg:oauth:2.0:oob'
+    #RedirectUri = 'urn:ietf:wg:oauth:2.0:oob'
 }
 $token = Get-MsalToken @params
 #endregion
@@ -31,7 +31,15 @@ $params = @{
 $token = Get-MsalToken @params
 #endregion
 
-
+#region non-interactive authentication 
+#(broken on purpose - dont freak out Ben)
+$params = @{
+    ClientId = $env:appId
+    TenantId = $env:tenant
+    ClientSecret = $env:secret
+}
+$token = Get-MsalToken @params
+#endregion
 
 
 #region add graph permissions to msi
